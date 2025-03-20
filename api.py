@@ -62,6 +62,32 @@ class API_Star_Wars(API_consumer):
     ''' The universe of Star Wars '''
     def __init__(self):
         self.__URL = 'https://swapi.dev/api/people/'
+
+    def extract(self, id):
+        try:
+            # 4.1 Concatenar o ID à URL base para formar o endpoint
+            endpoint = f"{self.base_url}{id}/"
+
+            # 4.2 Fazer uma requisição GET para obter os dados JSON
+            response = requests.get(endpoint)
+            response.raise_for_status()  # Lança um erro se o status HTTP não for 200
+            data = response.json()
+
+            # 4.3 Extrair o nome e a lista de filmes
+            name = data['name']
+            films = data['films']  # Lista de URLs de filmes
+
+            # Retorna uma tupla contendo o nome e a lista de filmes
+            return (name, films)
+
+        except requests.exceptions.RequestException as e:
+            # 4.4 Tratar exceções relacionadas à requisição
+            print(f"Erro na requisição: {e}")
+            return None
+        except KeyError as e:
+            # Tratar exceções caso alguma chave não exista
+            print(f"Erro ao acessar dados: {e}")
+            return None
     
     @property
     def URL(self):
