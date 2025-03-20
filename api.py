@@ -101,6 +101,32 @@ class API_Ice_and_Fire(API_consumer):
     ''' The universe of Ice And Fire '''
     def __init__(self):
         self.__URL = 'https://anapioficeandfire.com/api/characters/'
+
+    def extract(self, id):
+        try:
+            # 5.1 Concatenar o ID à URL base para formar o endpoint
+            endpoint = f"{self.base_url}{id}"
+
+            # 5.2 Fazer uma requisição GET para obter os dados JSON
+            response = requests.get(endpoint)
+            response.raise_for_status()  # Lança um erro caso o status HTTP não seja 200
+            data = response.json()
+
+            # 5.3 Extrair o nome e as séries de TV relacionadas ao personagem
+            name = data['name'] if data['name'] else "Desconhecido"
+            tv_series = data['tvSeries'] if data['tvSeries'] else []
+
+            # Retorna uma tupla contendo o nome e a lista de séries de TV
+            return (name, tv_series)
+
+        except requests.exceptions.RequestException as e:
+            # 5.4 Tratar exceções relacionadas à requisição
+            print(f"Erro na requisição: {e}")
+            return None
+        except KeyError as e:
+            # Tratar exceções caso alguma chave esteja ausente
+            print(f"Erro ao acessar dados: {e}")
+            return None
     
     @property
     def URL(self):
