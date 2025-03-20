@@ -23,9 +23,32 @@ class API_Pokemon(API_consumer):
         except:
             pass
 
-class API_Rick_Morty(API_consumer):
+class API_Rick_Morty:
     def __init__(self):
-        self.__URL = 'https://rickandmortyapi.com/api/character/'
+        self.base_url = "https://rickandmortyapi.com/api/character/"
+
+    def extract(self, id):
+        try:
+            # 3.1 Concatenar o ID à URL base
+            endpoint = f"{self.base_url}{id}"
+
+            # 3.2 Fazer uma requisição GET para obter os dados
+            response = requests.get(endpoint)
+            response.raise_for_status()  # Levanta um erro se o status não for 200
+            data = response.json()
+
+            # 3.3 Retornar uma tupla contendo (id, name, species)
+            return (data['id'], data['name'], data['species'])
+
+        except requests.exceptions.RequestException as e:
+            # 3.4 Tratar exceções relacionadas à requisição
+            print(f"Erro na requisição: {e}")
+            return None
+        except KeyError as e:
+            # Tratar exceções caso a chave não exista
+            print(f"Erro ao acessar dados: {e}")
+            return None
+
     
     @property
     def URL(self):
